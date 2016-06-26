@@ -25,34 +25,4 @@ endef
 
 lib.setup.sources = src/purest_json
 
-# file for creating deken package
-ifeq ($(findstring $(machine), x86_64 ia64), $(machine))
-  deken.bits = 64
-else
-  deken.bits = 32
-endif
-ifeq ($(system), Windows)
-  deken.ext = zip
-  deken.pack = zip -9 -r
-else
-  deken.ext = tar.gz
-  deken.pack = tar -zcvf
-endif
-deken.file = $(lib.name)-v$(lib.version)-($(system)-$(machine)-$(deken.bits))-externals
-deken.tmp = deken-tmp
-deken.folder = $(lib.name)
-
 include pd-lib-builder/Makefile.pdlibbuilder
-
-deken:
-	mkdir -p "$(deken.tmp)"
-	mkdir "$(deken.tmp)/$(deken.folder)"
-	cp $(executables) "$(deken.tmp)/$(deken.folder)/"
-	cp $(datafiles) "$(deken.tmp)/$(deken.folder)/"
-	mkdir "$(deken.tmp)/$(deken.folder)/examples"
-	cp -r manual "$(deken.tmp)/$(deken.folder)/"
-	cp $(examplefiles) "$(deken.tmp)/$(deken.folder)/examples"
-	cd "$(deken.tmp)"; \
-	  $(deken.pack) "$(deken.file).$(deken.ext)" "$(deken.folder)"; \
-	  rm -rf "$(deken.folder)"; \
-	  mv "$(deken.file).$(deken.ext)" ..
